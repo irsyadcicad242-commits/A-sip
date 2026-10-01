@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SI-Naskah: Pembuat Surat Resmi Organisasi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{--bg:#f3f6f4;--card:#fff;--tx:#17302a;--mut:#5d7770;--br:#d5e1dc;--pri:#0f7a55;--pri2:#e3f4ec;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1815;--card:#18251f;--tx:#e6f1ec;--mut:#8fa9a0;--br:#2b3d35;--pri:#34c58b;--pri2:#173328}}
+:root[data-theme="dark"]{--bg:#0f1815;--card:#18251f;--tx:#e6f1ec;--mut:#8fa9a0;--br:#2b3d35;--pri:#34c58b;--pri2:#173328}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--br);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+header h1{font-size:17px;margin:0;flex:1}header small{display:block;color:var(--mut);font-weight:400;font-size:12px}
+button,select,input,textarea{font:inherit;color:var(--tx)}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:9px;padding:9px 14px;cursor:pointer;font-weight:600}
+.btn.o{background:var(--pri2);color:var(--pri)}
+.tabs{display:flex;gap:6px;padding:10px 16px 0}
+.tabs button{flex:1;padding:9px;border:1px solid var(--br);background:var(--card);border-radius:9px;cursor:pointer}
+.tabs button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+main{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:16px;padding:16px;max-width:1300px;margin:auto}
+#form{background:var(--card);border:1px solid var(--br);border-radius:14px;padding:14px}
+fieldset{border:0;padding:0;margin:0 0 14px}
+legend{font-weight:700;color:var(--pri);margin-bottom:6px;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+label{display:block;font-size:12px;color:var(--mut);margin:8px 0 3px}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--br);border-radius:8px;background:var(--bg)}
+textarea{min-height:90px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#view{min-width:0}
+.bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+#wrap{overflow:hidden;border:1px solid var(--br);border-radius:10px;background:#cfd8d4}
+#paper{background:#fff;color:#000;transform-origin:top left;width:210mm;min-height:297mm;font-size:12pt;line-height:1.4}
+.kop{display:flex;align-items:center;gap:12px;text-align:center;border-bottom:3px double #000;padding-bottom:8px;margin-bottom:10px}
+.kop .t{flex:1}.kop b{display:block;letter-spacing:.5px}
+.lg{width:70px;height:70px;border:2px solid #0f7a55;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#0f7a55;font-size:13px;flex:none;overflow:hidden}
+.lg img{width:100%;height:100%;object-fit:contain}
+.meta td{padding:0 4px 0 0;vertical-align:top}
+.p{white-space:pre-line;text-align:justify;margin:8px 0}
+.ev td{padding:0 6px 0 0}
+.ttd{display:flex;justify-content:space-around;text-align:center;margin-top:10px}
+.ttd .s{height:60px;display:flex;align-items:center;justify-content:center}.ttd img{max-height:60px}
+@media(max-width:860px){main{grid-template-columns:1fr}.pane-f #view,.pane-v #form{display:none}}
+@media(min-width:861px){.tabs{display:none}}
+@media print{body *{visibility:hidden}#paper,#paper *{visibility:visible}#paper{position:absolute;left:0;top:0;transform:none!important}}
+</style>
+</head>
+<body>
+<header><h1>SI-Naskah<small>Pembuat surat & undangan resmi organisasi</small></h1><button class="btn o" id="reset">Reset</button></header>
+<div class="tabs"><button id="tf" class="on">✏️ Isi Data</button><button id="tv">📄 Pratinjau</button></div>
+<main class="pane-f" id="main">
+<section id="form">
+<fieldset><legend>Template</legend>
+<select id="tpl"><option value="">-- Pilih template surat --</option></select></fieldset>
+<fieldset><legend>Identitas / Kop</legend>
+<label>Tingkat kepengurusan</label>
+<select data-k="tingkat"><option>PIMPINAN RANTING</option><option>PIMPINAN KOMISARIAT</option><option>PIMPINAN ANAK CABANG</option><option>PIMPINAN CABANG</option></select>
+<label>Nama wilayah / lembaga</label><input data-k="wilayah">
+<label>Alamat sekretariat</label><input data-k="alamat">
+<div class="row"><div><label>Kontak</label><input data-k="telp"></div><div><label>Email</label><input data-k="email"></div></div>
+<div class="row"><div><label>Logo kiri</label><input type="file" accept="image/*" data-img="logoL"></div><div><label>Logo kanan</label><input type="file" accept="image/*" data-img="logoR"></div></div>
+</fieldset>
+<fieldset><legend>Surat</legend>
+<div class="row"><div><label>Nomor</label><input data-k="nomor"></div><div><label>Lampiran</label><input data-k="lampiran"></div></div>
+<label>Perihal</label><input data-k="perihal">
+<label>Kepada Yth.</label><input data-k="penerima">
+<label>Tempat penerima</label><input data-k="tempatP">
+</fieldset>
+<fieldset><legend>Isi</legend>
+<label>Paragraf pembuka</label><textarea data-k="pembuka"></textarea>
+<label>Isi utama</label><textarea data-k="isi"></textarea>
+<div class="row"><div><label>Hari</label><input data-k="hari"></div><div><label>Tanggal</label><input data-k="tglAcara"></div></div>
+<div class="row"><div><label>Waktu</label><input data-k="waktu"></div><div><label>Tempat</label><input data-k="tempat"></div></div>
+<label>Paragraf penutup</label><textarea data-k="penutup"></textarea>
+</fieldset>
+<fieldset><legend>Penandatangan</legend>
+<label>Kota</label><input data-k="kota">
+<div class="row"><div><label>Jabatan 1</label><input data-k="jab1"></div><div><label>Jabatan 2</label><input data-k="jab2"></div></div>
+<div class="row"><div><label>Nama 1</label><input data-k="nama1"></div><div><label>Nama 2</label><input data-k="nama2"></div></div>
+<div class="row"><div><label>NIA 1</label><input data-k="nia1"></div><div><label>NIA 2</label><input data-k="nia2"></div></div>
+<div class="row"><div><label>TTD digital 1</label><input type="file" accept="image/*" data-img="ttd1"></div><div><label>TTD digital 2</label><input type="file" accept="image/*" data-img="ttd2"></div></div>
+</fieldset>
+<fieldset><legend>Tampilan</legend>
+<div class="row"><div><label>Ukuran kertas</label><select data-k="kertas"><option value="297">A4</option><option value="330">F4 / Folio</option><option value="279">Letter</option></select></div>
+<div><label>Font</label><select data-k="font"><option>Arial Narrow, Arial, sans-serif</option><option>Arial, sans-serif</option><option>Times New Roman, serif</option></select></div></div>
+<div class="row"><div><label>Ukuran font (pt)</label><input type="number" data-k="fs" min="9" max="16"></div><div><label>Margin (mm)</label><input type="number" data-k="mg" min="5" max="40"></div></div>
+</fieldset>
+</section>
+<section id="view">
+<div class="bar"><button class="btn" id="dl">⬇️ Unduh JPG</button><button class="btn o" id="pr">🖨️ Cetak</button></div>
+<div id="wrap"><div id="paper"></div></div>
+</section>
+</main>
+<script>
+var D={tingkat:"PIMPINAN RANTING",wilayah:"Desa Sukamaju",alamat:"Jl. Masjid Raya No. 1, Sukamaju",telp:"0812-0000-0000",email:"pimpinan@email.com",nomor:"001/PR/A.2/I/2026",lampiran:"-",perihal:"",penerima:"",tempatP:"di Tempat",pembuka:"",isi:"",hari:"",tglAcara:"",waktu:"",tempat:"",penutup:"Demikian surat ini kami sampaikan. Atas perhatian dan kerja samanya kami ucapkan terima kasih.",kota:"Sukamaju",jab1:"Ketua",jab2:"Ketua",nama1:"Nama Ketua 1",nama2:"Nama Ketua 2",nia1:"NIA. 00.00.0000",nia2:"NIA. 00.00.0000",kertas:"297",font:"Arial Narrow, Arial, sans-serif",fs:12,mg:20};
+var T={
+"Undangan Rapat Bulanan":{perihal:"Undangan Rapat Bulanan",pembuka:"Dalam rangka konsolidasi dan evaluasi program kerja, kami mengundang sahabat/sahabati untuk hadir pada:",isi:"",hari:"Ahad",tglAcara:"",waktu:"19.30",tempat:"Sekretariat"},
+"Permohonan Izin Tempat":{perihal:"Permohonan Izin Penggunaan Tempat",pembuka:"Sehubungan dengan akan dilaksanakannya kegiatan organisasi, dengan ini kami mohon izin menggunakan tempat yang Bapak/Ibu kelola pada:",hari:"",tglAcara:"",waktu:"08.00",tempat:""},
+"Permohonan Narasumber":{perihal:"Permohonan Narasumber / Pemateri",pembuka:"Kami bermaksud mengundang Bapak/Ibu untuk berkenan menjadi narasumber pada kegiatan kami dengan rincian sebagai berikut:",hari:"",tglAcara:"",waktu:"09.00",tempat:""},
+"Surat Keterangan":{perihal:"Surat Keterangan",pembuka:"Yang bertanda tangan di bawah ini menerangkan bahwa:",isi:"Nama\t: ...\nAsal\t: ...\n\nBenar yang bersangkutan telah mengikuti kegiatan organisasi dengan baik.",hari:"",tglAcara:"",waktu:"",tempat:"",penutup:"Demikian surat keterangan ini dibuat untuk dipergunakan sebagaimana mestinya."},
+"Surat Pemberitahuan Kegiatan":{perihal:"Pemberitahuan Kegiatan",pembuka:"Sehubungan dengan program kerja organisasi, kami memberitahukan bahwa akan dilaksanakan kegiatan pada:",hari:"",tglAcara:"",waktu:"08.00",tempat:""}
+};
+var IMG={},f=Object.assign({},D),$=function(s){return document.querySelector(s)};
+function esc(s){var d=document.createElement("div");d.textContent=s==null?"":s;return d.innerHTML}
+function dates(){var n=new Date(),m,h;try{m=n.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"})}catch(e){m=""}try{h=new Intl.DateTimeFormat("id-ID-u-ca-islamic",{day:"numeric",month:"long",year:"numeric"}).format(n)}catch(e){h=""}return [h,m]}
+function logo(k,t){return '<div class="lg">'+(IMG[k]?'<img src="'+IMG[k]+'">':t)+'</div>'}
+function render(){
+ var d=dates(),p=$("#paper"),mg=f.mg+"mm";
+ p.style.fontFamily=f.font;p.style.fontSize=f.fs+"pt";p.style.padding=mg;p.style.minHeight=f.kertas+"mm";
+ var ev=(f.hari||f.tglAcara||f.waktu||f.tempat)?'<table class="ev" style="margin:6px 0 6px 20px"><tr><td>Hari</td><td>:</td><td>'+esc(f.hari)+'</td></tr><tr><td>Tanggal</td><td>:</td><td>'+esc(f.tglAcara)+'</td></tr><tr><td>Waktu</td><td>:</td><td>'+esc(f.waktu)+' WIB - Selesai</td></tr><tr><td>Tempat</td><td>:</td><td>'+esc(f.tempat)+'</td></tr></table>':"";
+ p.innerHTML='<div class="kop">'+logo("logoL","IPNU")+'<div class="t"><b style="font-size:15pt">'+esc(f.tingkat)+'</b><b>IKATAN PELAJAR NAHDLATUL ULAMA</b><b>IKATAN PELAJAR PUTRI NAHDLATUL ULAMA</b><b style="font-size:13pt">'+esc(f.wilayah).toUpperCase()+'</b><span style="font-size:9pt">'+esc(f.alamat)+'<br>'+esc(f.telp)+' | '+esc(f.email)+'</span></div>'+logo("logoR","IPPNU")+'</div>'
+ +'<table class="meta"><tr><td>Nomor</td><td>:</td><td>'+esc(f.nomor)+'</td></tr><tr><td>Lampiran</td><td>:</td><td>'+esc(f.lampiran)+'</td></tr><tr><td>Perihal</td><td>:</td><td><b>'+esc(f.perihal)+'</b></td></tr></table>'
+ +'<p style="margin:12px 0 0">Kepada Yth.<br><b>'+esc(f.penerima)+'</b><br>'+esc(f.tempatP)+'</p>'
+ +'<p class="p"><i>Assalamu\'alaikum warahmatullahi wabarakatuh</i></p><p class="p">'+esc(f.pembuka)+'</p>'+(f.isi?'<p class="p">'+esc(f.isi)+'</p>':'')+ev+'<p class="p">'+esc(f.penutup)+'</p>'
+ +'<p class="p"><i>Wallahulmuwaffiq ilaa aqwamittharieq<br>Wassalamu\'alaikum warahmatullahi wabarakatuh</i></p>'
+ +'<div style="text-align:right;margin-top:12px">'+esc(f.kota)+', '+esc(d[0])+'<br>'+esc(d[1])+'</div>'
+ +'<div style="text-align:center;margin-top:8px"><b>MENGETAHUI,</b><br>'+esc(f.tingkat)+' '+esc(f.wilayah)+'</div>'
+ +'<div class="ttd">'+[1,2].map(function(i){return '<div><b>'+(i==1?"IPNU":"IPPNU")+'</b><br>'+esc(f["jab"+i])+'<div class="s">'+(IMG["ttd"+i]?'<img src="'+IMG["ttd"+i]+'">':'')+'</div><b><u>'+esc(f["nama"+i])+'</u></b><br>'+esc(f["nia"+i])+'</div>'}).join("")+'</div>';
+ fit()
+}
+function fit(){var w=$("#wrap"),p=$("#paper");p.style.transform="none";var pw=p.offsetWidth,s=Math.min(1,w.clientWidth/pw);p.style.transform="scale("+s+")";w.style.height=(p.offsetHeight*s)+"px"}
+document.querySelectorAll("[data-k]").forEach(function(e){e.value=f[e.dataset.k];e.addEventListener("input",function(){f[e.dataset.k]=e.type=="number"?+e.value:e.value;render()})});
+document.querySelectorAll("[data-img]").forEach(function(e){e.addEventListener("change",function(){var r=new FileReader();r.onload=function(){IMG[e.dataset.img]=r.result;render()};if(e.files[0])r.readAsDataURL(e.files[0])})});
+var sel=$("#tpl");Object.keys(T).forEach(function(k){var o=document.createElement("option");o.textContent=k;sel.appendChild(o)});
+sel.onchange=function(){var t=T[sel.value];if(!t)return;["perihal","pembuka","isi","hari","tglAcara","waktu","tempat","penutup"].forEach(function(k){f[k]=t[k]!=null?t[k]:(k=="penutup"?D.penutup:"")});sync();render()};
+function sync(){document.querySelectorAll("[data-k]").forEach(function(e){e.value=f[e.dataset.k]})}
+$("#reset").onclick=function(){f=Object.assign({},D);IMG={};sel.value="";sync();render()};
+$("#pr").onclick=function(){window.print()};
+$("#dl").onclick=function(){var b=$("#dl"),p=$("#paper"),old=p.style.transform;if(typeof html2canvas!="function"){alert("Pustaka gambar belum termuat. Coba lagi.");return}b.textContent="Memproses...";p.style.transform="none";
+ html2canvas(p,{scale:2,backgroundColor:"#fff"}).then(function(c){var a=document.createElement("a");a.href=c.toDataURL("image/jpeg",.92);a.download="surat-resmi.jpg";a.click()}).catch(function(){alert("Gagal membuat gambar. Gunakan tombol Cetak lalu simpan sebagai PDF.")}).then(function(){p.style.transform=old;b.textContent="⬇️ Unduh JPG";fit()})};
+function tab(v){$("#main").className=v?"pane-v":"pane-f";$("#tf").className=v?"":"on";$("#tv").className=v?"on":"";setTimeout(fit,30)}
+$("#tf").onclick=function(){tab(0)};$("#tv").onclick=function(){tab(1)};
+window.addEventListener("resize",fit);render();
+</script>
+</body>
+</html>
